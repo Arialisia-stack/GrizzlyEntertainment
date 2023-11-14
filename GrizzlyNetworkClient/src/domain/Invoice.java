@@ -161,6 +161,10 @@ public class Generate_Invoice implements Serializable
 	@Override
 	public String toString() {
 		
+		logger.info("[INFO] ------- Generate_Invoice [invoice_No=" + invoice_No + ",equiptment_Id=" + equiptment_Id + ",customer_Id="
+						+ customer_Id + ",customer_Name=" + customer_Name + ",release_Date=" + release_Date 
+						+ "return_Date=" + return_Date + ",employee_Id=" + employee_Id
+						+ "]");
 		return "Generate_Invoice [\ninvoice_No=" + invoice_No + ",\nequiptment_Id=" + equiptment_Id + ",\ncustomer_Id="
 				+ customer_Id + ",\ncustomer_Name=" + customer_Name + ",\nrelease_Date=" + release_Date 
 				+ "\nreturn_Date=" + return_Date + ", \nemployee_Id=" + employee_Id
@@ -169,27 +173,6 @@ public class Generate_Invoice implements Serializable
 		
 	}
 
-	public void createTransaction() throws SQLException
-	{
-		
-		String createTrans = "INSERT INTO grizzly_db.invoice (equiptmentId,customerId,rental_Date,return_Date,invoice_No,employeeId,customer_Address,customer_Name) "
-		+ "VALUES('"+equiptment_Id+" ', '"+customer_Id+"' ,' "+release_Date+"' , '"+return_Date+"' , '"+invoice_No+"' , '"+customer_Address+
-			"', '"+employee_Id+"', "+customer_Name+"' );";
-
-			//creating connection to db
-			connection = DriverManager.getConnection("jdbc://localhost:3307/grizzlydb","root","usbw");
-			stmt = connection.createStatement();
-			int insert = stmt.executeUpdate(createTrans);
-			if (insert == 1)//once insertion occurred
-			{
-				JOptionPane.showMessageDialog(null, "Record was Inserted","Insertion Status", JOptionPane.INFORMATION_MESSAGE);
-				logger.info("[INFO] ------- Generate_Invoice [invoice_No=" + invoice_No + ",equiptment_Id=" + equiptment_Id + ",customer_Id="
-						+ customer_Id + ",customer_Name=" + customer_Name + ",release_Date=" + release_Date 
-						+ "return_Date=" + return_Date + ",employee_Id=" + employee_Id
-						+ "]");
-			}
-		
-	}
 	
 	
 }
