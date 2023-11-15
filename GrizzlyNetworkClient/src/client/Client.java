@@ -218,6 +218,15 @@ public class Client {
 		}
 	}
 	
+	public void sendEquipmentType(String type) {
+	    try {
+	        // Send equipment type
+	        objOs.writeObject(type);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	public void receiveResponse() {
 		try {
 			if(action.equalsIgnoreCase("Add User")) {

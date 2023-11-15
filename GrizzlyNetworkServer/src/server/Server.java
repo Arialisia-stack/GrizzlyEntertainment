@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -453,6 +455,33 @@ public class Server {
 	    return invObj;
 	}
 	
+	// Method to get a list of equipment by type
+    private List<Equipment> getEquipmentListByType(String type) {
+        List<Equipment> equipmentList = new ArrayList<>();
+
+        // SQL query to retrieve equipment of the specified type
+        String query = "SELECT * FROM grizzlydb.equipment WHERE type = ?";
+        
+        try (PreparedStatement pstmt = dbConn.prepareStatement(query)) {
+            pstmt.setString(1, type);
+            result = pstmt.executeQuery();
+
+            while (result.next()) {
+                Equipment equipObj = new Equipment();
+                equipObj.setEquipmentId(result.getString("equipmentId"));
+                equipObj.setEquipmentName(result.getString("equipmentName"));
+                equipObj.setStatus(result.getString("status"));
+                equipObj.setType(result.getString("type"));
+
+                equipmentList.add(equipObj);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return equipmentList;
+    }
+	
 	private void waitForRequests() {
 		String action = "";
 		getDatabaseConnection();
@@ -569,6 +598,14 @@ public class Server {
 					
 						invObj = findInvoiceById(invoiceId);
 						objOs.writeObject(invObj);
+					}
+					if (action.equals("Find Equipment By Type")) {
+						String equipmentType = (String) objIs.readObject();
+
+						List<Equipment> equipmentList = getEquipmentListByType(equipmentType);
+
+				        // Send the equipment list back to the client
+						objOs.writeObject(equipmentList);
 					}
 				} catch (ClassNotFoundException ex) {
 					ex.printStackTrace();
