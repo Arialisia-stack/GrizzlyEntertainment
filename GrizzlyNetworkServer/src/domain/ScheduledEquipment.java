@@ -10,6 +10,7 @@ public class ScheduledEquipment implements Serializable{
 	private String eventId;
 	private String equipmentId;
 	private Date eventDate;
+	private Date returnDate;
 
 	public ScheduledEquipment() {
 
@@ -52,6 +53,14 @@ public class ScheduledEquipment implements Serializable{
 
 	public void setEventDate(Date eventDate) {
 		this.eventDate = eventDate;
+	}
+	
+	public Date getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
 	}
 
 	public static long getSerialversionuid() {

@@ -205,9 +205,9 @@ public class Server {
 	}
 	
 	private void addEquipmentToFile(Equipment equipment) {
-		String sql = "INSERT INTO grizzlydb.equipment(equipmentId, equipmentName, type, status)"
+		String sql = "INSERT INTO grizzlydb.equipment(equipmentId, equipmentName, type, status, costPerDay)"
 	            + "VALUES ('" + equipment.getEquipmentId() + "' , '" + equipment.getEquipmentName()
-	            + "', '" + equipment.getType() + "', '" + equipment.getStatus()+ "');";
+	            + "', '" + equipment.getType() + "', '" + equipment.getStatus()+ "', '" + equipment.getCostPerDay() + "');";
 	    System.out.println("SQL Query: " + sql);  // debugging
 		try {
 			stmt = dbConn.createStatement();
@@ -236,6 +236,7 @@ public class Server {
 				equipObj.setEquipmentName(result.getString(2));
 				equipObj.setStatus(result.getString(3));
 				equipObj.setType(result.getString(4));
+				equipObj.setCostPerDay(result.getFloat(5));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -456,31 +457,33 @@ public class Server {
 	}
 	
 	// Method to get a list of equipment by type
-    private List<Equipment> getEquipmentListByType(String type) {
-        List<Equipment> equipmentList = new ArrayList<>();
+	  private List<Equipment> getEquipmentListByType(String type) {
+	        List<Equipment> equipmentList = new ArrayList<>();
 
-        // SQL query to retrieve equipment of the specified type
-        String query = "SELECT * FROM grizzlydb.equipment WHERE type = ?";
-        
-        try (PreparedStatement pstmt = dbConn.prepareStatement(query)) {
-            pstmt.setString(1, type);
-            result = pstmt.executeQuery();
+	        // SQL query to retrieve equipment of the specified type
+	        String query = "SELECT * FROM grizzlydb.equipment WHERE type = ?";
 
-            while (result.next()) {
-                Equipment equipObj = new Equipment();
-                equipObj.setEquipmentId(result.getString("equipmentId"));
-                equipObj.setEquipmentName(result.getString("equipmentName"));
-                equipObj.setStatus(result.getString("status"));
-                equipObj.setType(result.getString("type"));
+	        try (PreparedStatement pstmt = dbConn.prepareStatement(query)) {
+	            pstmt.setString(1, type);
+	            result = pstmt.executeQuery();
 
-                equipmentList.add(equipObj);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	            while (result.next()) {
+	                Equipment equipObj = new Equipment();
+	                equipObj.setEquipmentId(result.getString("equipmentId"));
+	                equipObj.setEquipmentName(result.getString("equipmentName"));
+	                equipObj.setStatus(result.getString("status"));
+	                equipObj.setType(result.getString("type"));
+	                equipObj.setCostPerDay(result.getFloat("costPerDay"));
 
-        return equipmentList;
-    }
+	                equipmentList.add(equipObj);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+
+	        return equipmentList;
+	    }
+
 	
 	private void waitForRequests() {
 		String action = "";

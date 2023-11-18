@@ -6,5 +6,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/mysql-connector-j-8.1.0/mysql-connector-j-8.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/abria/Downloads/commons-dbutils-1.8.1-bin/commons-dbutils-1.8.1/commons-dbutils-1.8.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/abria/Downloads/jcalendar-1.4/lib/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/apache-log4j-2.20.0-bin/apache-log4j-2.20.0-bin/log4j-api-2.20.0.jar"/>
+	<classpathentry kind="lib" path="C:/apache-log4j-2.20.0-bin/apache-log4j-2.20.0-bin/log4j-core-2.20.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

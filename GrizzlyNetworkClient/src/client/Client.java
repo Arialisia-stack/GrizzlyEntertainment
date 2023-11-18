@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -299,7 +300,7 @@ public class Client {
 								return;
 							}
 							System.out.println("Received Equipment: " + equipment.getEquipmentId() + " " + equipment.getEquipmentName() +
-												" " + equipment.getStatus() + " " + equipment.getType());//debugging
+												" " + equipment.getStatus() + " " + equipment.getType() + " " + equipment.getCostPerDay());//debugging
 						}
 						if(action.equalsIgnoreCase("Add Transaction")) {
 							Boolean flag = (Boolean) objIs.readObject();
@@ -394,6 +395,22 @@ public class Client {
 											System.out.println("Received Invoice: " + invoice.getInvoiceId() + " " + invoice.getTransactionId() + 
 																" " + invoice.getInvoiceDate() + " " + invoice.getAmount());//debugging
 										}
+										if (action.equalsIgnoreCase("Find Equipment By Type")) {								            
+								            List<Equipment> equipmentList = (List<Equipment>) objIs.readObject();
+
+								            if (equipmentList == null || equipmentList.isEmpty()) {
+								                JOptionPane.showMessageDialog(null, "No equipment found for the specified type",
+								                        "Find Equipment Status", JOptionPane.INFORMATION_MESSAGE);
+								                return;
+								            }
+
+								            // Process the received list of equipment
+								            for (Equipment equipment : equipmentList) {
+								                System.out.println("Received Equipment: " + equipment.getEquipmentId() + " " +
+								                        equipment.getEquipmentName() + " " + equipment.getStatus() + " " +
+								                        equipment.getType() + " " + equipment.getCostPerDay());
+								            }
+								        }
 		} catch (ClassCastException ex) {
 			ex.printStackTrace();
 		} catch (EOFException eof) {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 public class Invoice implements Serializable{
-private static final long serialVersionUID = 3145082846227260366L;
+	private static final long serialVersionUID = 3145082846227260366L;
 	
 	private String invoiceId;
 	private String transactionId;

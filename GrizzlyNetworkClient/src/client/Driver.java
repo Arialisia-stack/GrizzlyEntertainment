@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import javax.swing.SwingUtilities;
+
 import domain.Customer;
 import domain.Employee;
 import domain.Equipment;
@@ -14,6 +16,7 @@ import domain.RentalRequest;
 import domain.ScheduledEquipment;
 import domain.Transaction;
 import domain.User;
+import view.Login;
 
 public class Driver {
 
@@ -27,7 +30,7 @@ public class Driver {
 		Employee employee = new Employee("3","Tavar","Oliver");
 		
 		//NB, EQUIPMENT TYPES ARE: STAGING, LIGHTING, POWER AND SOUND
-		Equipment equipment = new Equipment("100","Tall Boom", "staging","Available");
+		Equipment equipment = new Equipment("300","Stage Light B", "Lighting","Available", 2000f);
 		
 		//NB, Customer ID and Equipment ID, must exist before a transaction can be created
 		Transaction transaction = new Transaction("T1OO","1","100",Date.valueOf(LocalDate.of(2023, 11, 13)),
@@ -40,7 +43,7 @@ public class Driver {
 		RentalRequest rentalRequest = new RentalRequest("R1","1","100",Date.valueOf(LocalDate.of(2023, 11, 13)),"M1","Available");
 		
 		//NB EquipmentID has to exist before scheduledEquipment can be created
-		ScheduledEquipment scheduledEquipment = new ScheduledEquipment("S1","E1","100",Date.valueOf(LocalDate.of(2023, 11, 13)));
+		ScheduledEquipment scheduledEquipment = new ScheduledEquipment("S1","E1","100",Date.valueOf(LocalDate.of(2023, 11, 13)),Date.valueOf(LocalDate.of(2023, 11, 13)));
 		
 		//NB TransactionId need to exist before creating an invoice
 		Invoice invoice = new Invoice("I1","T1OO",Date.valueOf(LocalDate.of(2023, 11, 16)),1200f);
@@ -85,12 +88,7 @@ public class Driver {
 		client.closeConnection();
 		
 				
-		client.sendAction("Add Equipment");
-		System.out.println("Message sent to server");
-		client.sendEquipment(equipment);
-		System.out.println("Record sent to server");
-		client.receiveResponse();
-		System.out.println("Response received from server"); 
+		
 		
 		client.sendAction("Find Equipment");
 		client.sendEquipmentId("100");
@@ -137,6 +135,13 @@ public class Driver {
 		client.receiveResponse();
 		
 		client.closeConnection();
+		
+		client.sendAction("Add Equipment");
+		System.out.println("Message sent to server");
+		client.sendEquipment(equipment);
+		System.out.println("Record sent to server");
+		client.receiveResponse();
+		System.out.println("Response received from server"); 
 		
 		client.sendAction("Add Scheduled Equipment");
 		System.out.println("Message sent to server");

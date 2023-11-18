@@ -9,15 +9,15 @@ private static final long serialVersionUID = 3145082846227260366L;
 	private String transactionId;
 	private String customerId;
 	private String equipmentId;
-	private Date rentalDate;
-	private Date returnDate;
+	private java.util.Date rentalDate;
+	private java.util.Date returnDate;
 	private float totalCost;
 	
 	public Transaction() {
 	
 	}
 
-	public Transaction(String transactionId, String customerId, String equipmentId, Date rentalDate, Date returnDate, float totalCost) {
+	public Transaction(String transactionId, String customerId, String equipmentId, java.util.Date rentalDate, java.util.Date returnDate, float totalCost) {
 		this.transactionId = transactionId;
 		this.customerId = customerId;
 		this.equipmentId = equipmentId;
@@ -50,7 +50,7 @@ private static final long serialVersionUID = 3145082846227260366L;
 		this.equipmentId = equipmentId;
 	}
 
-	public Date getRentalDate() {
+	public java.util.Date getRentalDate() {
 		return rentalDate;
 	}
 
@@ -58,7 +58,7 @@ private static final long serialVersionUID = 3145082846227260366L;
 		this.rentalDate = rentalDate;
 	}
 
-	public Date getReturnDate() {
+	public java.util.Date getReturnDate() {
 		return returnDate;
 	}
 
