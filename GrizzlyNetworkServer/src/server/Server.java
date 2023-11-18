@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import domain.Customer;
 import domain.Employee;
@@ -36,7 +40,10 @@ public class Server {
 	private Statement stmt;
 	private ResultSet result = null;
 	
+	private static final Logger logger = LogManager.getLogger(Server.class);
+	
 	public Server() {
+		logger.info("Server is starting...");
 		this.createConnection();
 		this.waitForRequests();
 	}
@@ -45,7 +52,7 @@ public class Server {
 		try {
 			serverSocket = new ServerSocket(8888);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.error("Error creating server socket", e);
 			e.printStackTrace();
 		}
 	}
@@ -484,144 +491,156 @@ public class Server {
 	        return equipmentList;
 	    }
 
-	
-	private void waitForRequests() {
-		String action = "";
-		getDatabaseConnection();
-		User userObj;
-		Customer custObj;
-		Employee empObj;
-		Equipment equipObj;
-		Transaction transObj;
-		RentalRequest requestObj;
-		Message messObj;
-		ScheduledEquipment schEquipObj;
-		Invoice invObj;
-		try {
-			while(true) {
-				connectionSocket = serverSocket.accept();
-				this.configureStreams();
-				try {
-					action = (String) objIs.readObject();
-					
-					if (action.equals("Add User")) {
-						userObj = (User)objIs.readObject();
-						addUserToFile(userObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find User")) {
-						String userId = (String) objIs.readObject();
-					
-						userObj = findUserById(userId);
-						objOs.writeObject(userObj);
-					}
-					
-					if (action.equals("Add Customer")) {
-						custObj = (Customer)objIs.readObject();
-						addCustomerToFile(custObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Customer")) {
-						String customerId = (String) objIs.readObject();
-					
-						custObj = findCustomerById(customerId);
-						objOs.writeObject(custObj);
-					}
-					
-					if (action.equals("Add Employee")) {
-						empObj = (Employee)objIs.readObject();
-						addEmployeeToFile(empObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Employee")) {
-						String employeeId = (String) objIs.readObject();
-					
-						empObj = findEmployeeById(employeeId);
-						objOs.writeObject(empObj);
-					}
-					
-					if (action.equals("Add Equipment")) {
-						equipObj = (Equipment)objIs.readObject();
-						addEquipmentToFile(equipObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Equipment")) {
-						String equipmentId = (String) objIs.readObject();
-					
-						equipObj = findEquipmentById(equipmentId);
-						objOs.writeObject(equipObj);
-					}
-					
-					if (action.equals("Add Transaction")) {
-						transObj = (Transaction)objIs.readObject();
-						addTransactionToFile(transObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Transaction")) {
-						String transactionId = (String) objIs.readObject();
-					
-						transObj = findTransactionById(transactionId);
-						objOs.writeObject(transObj);
-					}
-					
-					if (action.equals("Add Rental Request")) {
-						requestObj = (RentalRequest)objIs.readObject();
-						addRentalRequestToFile(requestObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Rental Request")) {
-						String requestId = (String) objIs.readObject();
-					
-						requestObj = findRentalRequestById(requestId);
-						objOs.writeObject(requestObj);
-					}
-					
-					if (action.equals("Add Message")) {
-						messObj = (Message)objIs.readObject();
-						addMessageToFile(messObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Message")) {
-						String messageId = (String) objIs.readObject();
-					
-						messObj = findMessageById(messageId);
-						objOs.writeObject(messObj);
-					}
-					
-					if (action.equals("Add Scheduled Equipment")) {
-						schEquipObj = (ScheduledEquipment)objIs.readObject();
-						addScheduledEquipmentToFile(schEquipObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Scheduled Equipment")) {
-						String scheduleId = (String) objIs.readObject();
-					
-						schEquipObj = findScheduledEquipmentById(scheduleId);
-						objOs.writeObject(schEquipObj);
-					}
-					
-					if (action.equals("Add Invoice")) {
-						invObj = (Invoice)objIs.readObject();
-						addInvoiceToFile(invObj);
-						objOs.writeObject(true);
-					} else if (action.equals("Find Invoice")) {
-						String invoiceId = (String) objIs.readObject();
-					
-						invObj = findInvoiceById(invoiceId);
-						objOs.writeObject(invObj);
-					}
-					if (action.equals("Find Equipment By Type")) {
-						String equipmentType = (String) objIs.readObject();
+	  private void waitForRequests() {
+	        getDatabaseConnection();
+	        try {
+	            while (true) {
+	                connectionSocket = serverSocket.accept();
+	                // Handle each client request in a separate thread
+	                Thread clientThread = new Thread(() -> handleClientRequest(connectionSocket));
+	                clientThread.start();
+	            }
+	        } catch (IOException ex) {
+	            logger.error("IOException", ex);
+	            ex.printStackTrace();
+	        }
+	    }
 
-						List<Equipment> equipmentList = getEquipmentListByType(equipmentType);
+	    private void handleClientRequest(Socket clientSocket) {
+			User userObj;
+			Customer custObj;
+			Employee empObj;
+			Equipment equipObj;
+			Transaction transObj;
+			RentalRequest requestObj;
+			Message messObj;
+			ScheduledEquipment schEquipObj;
+			Invoice invObj;
+	    	
+	        configureStreams();
+	        String action = "";
 
-				        // Send the equipment list back to the client
-						objOs.writeObject(equipmentList);
-					}
-				} catch (ClassNotFoundException ex) {
-					ex.printStackTrace();
-				} catch (IOException ex) {
-					ex.printStackTrace();
+	        try {
+	            action = (String) objIs.readObject();
+	            logger.info("Received action: " + action);
+				
+				if (action.equals("Add User")) {
+					userObj = (User)objIs.readObject();
+					addUserToFile(userObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find User")) {
+					String userId = (String) objIs.readObject();
+				
+					userObj = findUserById(userId);
+					objOs.writeObject(userObj);
 				}
-				this.closeConnection();
-			}
-		} catch (EOFException ex) {
-			System.out.println("Client has terminated connections with the server");
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
+				
+				if (action.equals("Add Customer")) {
+					custObj = (Customer)objIs.readObject();
+					addCustomerToFile(custObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Customer")) {
+					String customerId = (String) objIs.readObject();
+				
+					custObj = findCustomerById(customerId);
+					objOs.writeObject(custObj);
+				}
+				
+				if (action.equals("Add Employee")) {
+					empObj = (Employee)objIs.readObject();
+					addEmployeeToFile(empObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Employee")) {
+					String employeeId = (String) objIs.readObject();
+				
+					empObj = findEmployeeById(employeeId);
+					objOs.writeObject(empObj);
+				}
+				
+				if (action.equals("Add Equipment")) {
+					equipObj = (Equipment)objIs.readObject();
+					addEquipmentToFile(equipObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Equipment")) {
+					String equipmentId = (String) objIs.readObject();
+				
+					equipObj = findEquipmentById(equipmentId);
+					objOs.writeObject(equipObj);
+				}
+				
+				if (action.equals("Add Transaction")) {
+					transObj = (Transaction)objIs.readObject();
+					addTransactionToFile(transObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Transaction")) {
+					String transactionId = (String) objIs.readObject();
+				
+					transObj = findTransactionById(transactionId);
+					objOs.writeObject(transObj);
+				}
+				
+				if (action.equals("Add Rental Request")) {
+					requestObj = (RentalRequest)objIs.readObject();
+					addRentalRequestToFile(requestObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Rental Request")) {
+					String requestId = (String) objIs.readObject();
+				
+					requestObj = findRentalRequestById(requestId);
+					objOs.writeObject(requestObj);
+				}
+				
+				if (action.equals("Add Message")) {
+					messObj = (Message)objIs.readObject();
+					addMessageToFile(messObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Message")) {
+					String messageId = (String) objIs.readObject();
+				
+					messObj = findMessageById(messageId);
+					objOs.writeObject(messObj);
+				}
+				
+				if (action.equals("Add Scheduled Equipment")) {
+					schEquipObj = (ScheduledEquipment)objIs.readObject();
+					addScheduledEquipmentToFile(schEquipObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Scheduled Equipment")) {
+					String scheduleId = (String) objIs.readObject();
+				
+					schEquipObj = findScheduledEquipmentById(scheduleId);
+					objOs.writeObject(schEquipObj);
+				}
+				
+				if (action.equals("Add Invoice")) {
+					invObj = (Invoice)objIs.readObject();
+					addInvoiceToFile(invObj);
+					objOs.writeObject(true);
+				} else if (action.equals("Find Invoice")) {
+					String invoiceId = (String) objIs.readObject();
+				
+					invObj = findInvoiceById(invoiceId);
+					objOs.writeObject(invObj);
+				}
+				if (action.equals("Find Equipment By Type")) {
+					String equipmentType = (String) objIs.readObject();
+
+					List<Equipment> equipmentList = getEquipmentListByType(equipmentType);
+
+			        // Send the equipment list back to the client
+					objOs.writeObject(equipmentList);
+				}
+				
+	        } catch (SocketException se) {
+	            // Handle the socket closure
+	            System.out.println("Client closed the connection.");
+	            logger.warn("Client closed the connection.", se);
+	        } catch (IOException | ClassNotFoundException e) {
+	            e.printStackTrace();
+	            logger.error("Exception occurred: " + e.getMessage());
+	            logger.error("Exception occurred", e);
+	        } finally {
+	            closeConnection();
+	        }
+	    }
 }

@@ -31,7 +31,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CustomerDashboard extends JFrame {
+	
+	 private static final Logger logger = LogManager.getLogger(CustomerDashboard.class);
 	
 	private Connection dbConn;
 	
@@ -77,197 +82,220 @@ public class CustomerDashboard extends JFrame {
     }
 
     private void initComponents() {
-        jLabelCustomerWelcome = new JLabel();
-        jLabelAvailableEquipment = new JLabel();
-        jLabelCustomerInfo = new JLabel();
-        actionPanel = new JPanel();
-        jScrollPane2 = new JScrollPane();
-        jTableEquipment = new JTable();
-        categoryComboBox = new JComboBox<>();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Customer Dashboard");
-
-        jLabelCustomerWelcome.setFont(new Font("Verdana", Font.BOLD, 18));
-        jLabelCustomerWelcome.setText("Welcome, " + customerFirstName + "  " + customerLastName + "!");
-
-        jLabelAvailableEquipment.setFont(new Font("Verdana", Font.BOLD, 18));
-        jLabelAvailableEquipment.setText("Available Equipment");
-
-        jLabelCustomerInfo.setFont(new Font("Verdana", Font.PLAIN, 14));
-        jLabelCustomerInfo.setText("Account Number: " + accountNumber);
-
-        JLabel jLabelHeading = new JLabel("GRIZZLY ENTERTAINMENT EQUIPMENT RENTAL", SwingConstants.CENTER);
-        jLabelHeading.setFont(new Font("Verdana", Font.BOLD, 20));
-
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(jLabelHeading, BorderLayout.NORTH);
-        topPanel.add(jLabelCustomerWelcome, BorderLayout.CENTER); 
-        topPanel.add(jLabelCustomerInfo, BorderLayout.SOUTH);
-        categoryComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateEquipmentTable();
-            }
-        });
-
-        actionPanel.setLayout(new BorderLayout());
-        actionPanel.setPreferredSize(new Dimension(800, 600));
-
-        jTableEquipment.setModel(new DefaultTableModel(
-                new Object[][]{
-                        {null, null, null, null},
-                },
-                new String[]{
-                        "Equipment ID", "Equipment Name", "Category", "Unit Cost",
-                }
-        ));
-
-        jScrollPane2.setViewportView(jTableEquipment);
-
-        actionPanel.add(topPanel, BorderLayout.NORTH);
-        actionPanel.add(categoryComboBox, BorderLayout.CENTER);
-        actionPanel.add(jScrollPane2, BorderLayout.SOUTH);
-
-
-        categoryComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateEquipmentTable();
-            }
-        });
-
-        actionPanel.setLayout(new BorderLayout());
-        actionPanel.setPreferredSize(new Dimension(800, 600));
-
-        jTableEquipment.setModel(new DefaultTableModel(
-                new Object[][]{
-                        {null, null, null, null},
-                },
-                new String[]{
-                        "Equipment ID", "Equipment Name", "Category", "Unit Cost",
-                }
-        ));
-
-        jScrollPane2.setViewportView(jTableEquipment);
-
-        actionPanel.add(topPanel, BorderLayout.NORTH);
-        actionPanel.add(jScrollPane2, BorderLayout.CENTER);
-        actionPanel.add(categoryComboBox, BorderLayout.SOUTH);
-
-        dateChooserRental = new JDateChooser();
-        dateChooserReturn = new JDateChooser();
-        btnBookEquipment = new JButton("Book Equipment");
-        btnBookEquipment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                bookEquipment();
-            }
-        });
-
-        btnViewPastTransactions = new JButton("View Past Transactions");
-        btnViewPastTransactions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewPastTransactions();
-            }
-        });
-
-        btnViewSingleTransaction = new JButton("View Single Transaction");
-        btnViewSingleTransaction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewSingleTransaction();
-            }
-        });
-        
-     // Initialize the message components
-        messageTextArea = new JTextArea();
-        newMessageTextField = new JTextField();
-        sendMessageButton = new JButton("Send Message");
-
-        // Add ActionListener to the Send Message button
-        sendMessageButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendMessage();
-            }
-        });
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(actionPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(categoryComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(dateChooserRental, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(dateChooserReturn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnBookEquipment)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnViewPastTransactions)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnViewSingleTransaction))
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(messageTextArea, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                .addComponent(newMessageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(sendMessageButton)
-                            )
-                        )
-                    )
-                    .addContainerGap()
-                )
-        );
-
-        layout.setVerticalGroup(
-            layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(actionPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(categoryComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(dateChooserRental, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dateChooserReturn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnBookEquipment)
-                    .addComponent(btnViewPastTransactions)
-                    .addComponent(btnViewSingleTransaction))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(messageTextArea, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(newMessageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sendMessageButton)
-                    )
-                )
-                .addContainerGap()
-        );
-
-        pack();
-        setLocationRelativeTo(null);
-
-        // Populate the categoryComboBox
-        populateCategoryComboBox();
-
-        // Update the equipment table initially
-        updateEquipmentTable();
-
-        // Initialize the receiverEmployeeId by fetching a random employee ID from the database
-        receiverEmployeeId = getRandomEmployeeId();
-        // Display previous message history in the message area
-        displayPreviousMessages();
-    }
+    	try {
+            logger.info("Initializing CustomerDashboard...");
+	        jLabelCustomerWelcome = new JLabel();
+	        jLabelAvailableEquipment = new JLabel();
+	        jLabelCustomerInfo = new JLabel();
+	        actionPanel = new JPanel();
+	        jScrollPane2 = new JScrollPane();
+	        jTableEquipment = new JTable();
+	        categoryComboBox = new JComboBox<>();
+	
+	        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+	        setTitle("Customer Dashboard");
+	
+	        jLabelCustomerWelcome.setFont(new Font("Verdana", Font.BOLD, 18));
+	        jLabelCustomerWelcome.setText("Welcome, " + customerFirstName + "  " + customerLastName + "!");
+	
+	        jLabelAvailableEquipment.setFont(new Font("Verdana", Font.BOLD, 18));
+	        jLabelAvailableEquipment.setText("Available Equipment");
+	
+	        jLabelCustomerInfo.setFont(new Font("Verdana", Font.PLAIN, 14));
+	        jLabelCustomerInfo.setText("Account Number: " + accountNumber);
+	
+	        JLabel jLabelHeading = new JLabel("GRIZZLY ENTERTAINMENT EQUIPMENT RENTAL", SwingConstants.CENTER);
+	        jLabelHeading.setFont(new Font("Verdana", Font.BOLD, 20));
+	
+	        JPanel topPanel = new JPanel(new BorderLayout());
+	        topPanel.add(jLabelHeading, BorderLayout.NORTH);
+	        topPanel.add(jLabelCustomerWelcome, BorderLayout.CENTER); 
+	        topPanel.add(jLabelCustomerInfo, BorderLayout.SOUTH);
+	        categoryComboBox.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                updateEquipmentTable();
+	            }
+	        });
+	
+	        actionPanel.setLayout(new BorderLayout());
+	        actionPanel.setPreferredSize(new Dimension(800, 600));
+	
+	        jTableEquipment.setModel(new DefaultTableModel(
+	                new Object[][]{
+	                        {null, null, null, null},
+	                },
+	                new String[]{
+	                        "Equipment ID", "Equipment Name", "Category", "Unit Cost",
+	                }
+	        ));
+	
+	        jScrollPane2.setViewportView(jTableEquipment);
+	
+	        actionPanel.add(topPanel, BorderLayout.NORTH);
+	        actionPanel.add(categoryComboBox, BorderLayout.CENTER);
+	        actionPanel.add(jScrollPane2, BorderLayout.SOUTH);
+	
+	
+	        categoryComboBox.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                updateEquipmentTable();
+	            }
+	        });
+	
+	        actionPanel.setLayout(new BorderLayout());
+	        actionPanel.setPreferredSize(new Dimension(800, 600));
+	
+	        jTableEquipment.setModel(new DefaultTableModel(
+	                new Object[][]{
+	                        {null, null, null, null},
+	                },
+	                new String[]{
+	                        "Equipment ID", "Equipment Name", "Category", "Unit Cost",
+	                }
+	        ));
+	
+	        jScrollPane2.setViewportView(jTableEquipment);
+	
+	        actionPanel.add(topPanel, BorderLayout.NORTH);
+	        actionPanel.add(jScrollPane2, BorderLayout.CENTER);
+	        actionPanel.add(categoryComboBox, BorderLayout.SOUTH);
+	
+	        dateChooserRental = new JDateChooser();
+	        dateChooserReturn = new JDateChooser();
+	        btnBookEquipment = new JButton("Book Equipment");
+	        btnBookEquipment.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                bookEquipment();
+	            }
+	        });
+	
+	        btnViewPastTransactions = new JButton("View Past Transactions");
+	        btnViewPastTransactions.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                viewPastTransactions();
+	            }
+	        });
+	
+	        btnViewSingleTransaction = new JButton("View Single Transaction");
+	        btnViewSingleTransaction.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                viewSingleTransaction();
+	            }
+	        });
+	        
+	     // Initialize the message components
+	        messageTextArea = new JTextArea();
+	        newMessageTextField = new JTextField();
+	        sendMessageButton = new JButton("Send Message");
+	
+	        // Add ActionListener to the Send Message button
+	        sendMessageButton.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                sendMessage();
+	            }
+	        });
+	
+	        GroupLayout layout = new GroupLayout(getContentPane());
+	        getContentPane().setLayout(layout);
+	
+	        layout.setHorizontalGroup(
+	            layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+	                .addGroup(layout.createSequentialGroup()
+	                    .addContainerGap()
+	                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	                        .addComponent(actionPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                        .addComponent(categoryComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                        .addGroup(layout.createSequentialGroup()
+	                            .addComponent(dateChooserRental, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                            .addComponent(dateChooserReturn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+	                        .addGroup(layout.createSequentialGroup()
+	                            .addComponent(btnBookEquipment)
+	                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+	                            .addComponent(btnViewPastTransactions)
+	                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+	                            .addComponent(btnViewSingleTransaction))
+	                        .addGroup(layout.createSequentialGroup()
+	                            .addComponent(messageTextArea, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
+	                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+	                                .addComponent(newMessageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                                .addComponent(sendMessageButton)
+	                            )
+	                        )
+	                    )
+	                    .addContainerGap()
+	                )
+	        );
+	
+	        layout.setVerticalGroup(
+	            layout.createSequentialGroup()
+	                .addContainerGap()
+	                .addComponent(actionPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                .addComponent(categoryComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+	                    .addComponent(dateChooserRental, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                    .addComponent(dateChooserReturn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+	                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+	                    .addComponent(btnBookEquipment)
+	                    .addComponent(btnViewPastTransactions)
+	                    .addComponent(btnViewSingleTransaction))
+	                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+	                    .addComponent(messageTextArea, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                    .addGroup(layout.createSequentialGroup()
+	                        .addComponent(newMessageTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+	                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+	                        .addComponent(sendMessageButton)
+	                    )
+	                )
+	                .addContainerGap()
+	        );
+	
+	        pack();
+	        setLocationRelativeTo(null);
+	
+	        // Populate the categoryComboBox
+	        populateCategoryComboBox();
+	
+	        logger.info("CustomerDashboard components initialized.");
+	
+	        // Set customerId using a method or fetch it from the database during login
+	        this.customerId = getCustomerIdFromDatabase(customerFirstName, customerLastName);
+	        if (customerId == null) {
+	            // Log an error if customer ID is not retrieved
+	            logger.error("Failed to retrieve customer ID from the database.");
+	            return;
+	        }
+	
+	        // Log information about successful customer ID retrieval
+	        logger.info("Customer ID retrieved successfully: " + customerId);
+	
+	        // Update the equipment table initially
+	        updateEquipmentTable();
+	
+	        // Initialize the receiverEmployeeId by fetching a random employee ID from the database
+	        receiverEmployeeId = getRandomEmployeeId();
+	
+	        // Display previous message history in the message area
+	        displayPreviousMessages();
+	
+	        // Log information about successful setup
+	        logger.info("Setup of CustomerDashboard completed.");
+	    } catch (Exception e) {
+	        // Log an error if an exception occurs during initialization
+	        logger.error("Error initializing CustomerDashboard.", e);
+	    }
+}
 
     private String getRandomEmployeeId() {
         String query = "SELECT userId FROM user WHERE role = 'Employee' ORDER BY RAND() LIMIT 1";
@@ -339,29 +367,36 @@ public class CustomerDashboard extends JFrame {
     }
     
     private void sendMessage() {
-        // Get the message content from the text field
-        String messageContent = newMessageTextField.getText().trim();
+        try {
+            // Get the message content from the text field
+            String messageContent = newMessageTextField.getText().trim();
 
-        // Check if the message is not empty
-        if (!messageContent.isEmpty()) {
-            // Create a Message object
-            Message message = new Message();
-            message.setMessageId(generateMessageId());  // Implement this method to generate a unique message ID
-            message.setSenderId(customerId);
-         // Update the receiverEmployeeId randomly for each new message
-            receiverEmployeeId = getRandomEmployeeId();
-            message.setReceiverId(receiverEmployeeId);
-            message.setMessageContent(messageContent);
-            message.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            // Check if the message is not empty
+            if (!messageContent.isEmpty()) {
+                // Create a Message object
+                Message message = new Message();
+                message.setMessageId(generateMessageId());  
+                message.setSenderId(customerId);
+                receiverEmployeeId = getRandomEmployeeId();
+                message.setReceiverId(receiverEmployeeId);
+                message.setMessageContent(messageContent);
+                message.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
-            // Call a method to save the message to the database
-            saveMessageToDatabase(message);
+                // Call a method to save the message to the database
+                saveMessageToDatabase(message);
 
-            // Display the message in the text area
-            messageTextArea.append("You: " + messageContent + "\n");
+                // Display the message in the text area
+                messageTextArea.append("You: " + messageContent + "\n");
 
-            // Clear the text field after sending the message
-            newMessageTextField.setText("");
+                // Clear the text field after sending the message
+                newMessageTextField.setText("");
+
+                // Log information about successful message sending
+                logger.info("Message sent successfully.");
+            }
+        } catch (Exception e) {
+            // Log an error if an exception occurs
+            logger.error("Error while sending a message", e);
         }
     }
     

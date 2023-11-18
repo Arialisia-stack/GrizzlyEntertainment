@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 public class Login extends javax.swing.JFrame {
@@ -32,6 +35,8 @@ public class Login extends javax.swing.JFrame {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/grizzlydb";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";
+
+    private static final Logger logger = LogManager.getLogger(Login.class);
 
     
     public Login() {
@@ -185,6 +190,7 @@ public class Login extends javax.swing.JFrame {
     } 
     
     private void login() {
+    	logger.info("Attempting login...");
         String enteredUsername = jTextFieldUsername.getText();
         String enteredPassword = new String(jPasswordField.getPassword());
 
@@ -212,6 +218,7 @@ public class Login extends javax.swing.JFrame {
                 String role = resultSet.getString("role");
 
                 JOptionPane.showMessageDialog(this, "Login successful! Welcome, " + role + "!");
+                logger.info("Login successful! Welcome, " + role + "!");
 
                 // Check the role and execute a corresponding query to get additional information
                 if ("Customer".equalsIgnoreCase(role)) {
@@ -220,12 +227,14 @@ public class Login extends javax.swing.JFrame {
                     openEmployeeDashboard(userId);
                 }
             } else {
+            	logger.warn("Invalid username or password. Please try again.");
                 JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.", "Login Failed",
                         JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Error during login:", e);
         } finally {
             // Close the database resources
             try {
@@ -377,12 +386,12 @@ public class Login extends javax.swing.JFrame {
         }
     }   
                                          
-    public static void main(String args[]) {
+  /*  public static void main(String args[]) {
     
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Login().setVisible(true);
             }
         });
-    }                 
+    }  */               
 }

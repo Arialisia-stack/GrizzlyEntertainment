@@ -25,12 +25,12 @@ public class Driver {
 		
 		//NB, USER MUST BE CREATED BEFORE CUSTOMER OR EMPLOYEE
 		
-		User user = new User("3","Tavar","tavPassword","Employee");
+		User user = new User("7","Lisa","Lee","Employee");
 		Customer customer = new Customer("1","Abriana","Cooper",1234567891,20.55f);
-		Employee employee = new Employee("3","Tavar","Oliver");
+		Employee employee = new Employee("7","Lisa","Henry");
 		
 		//NB, EQUIPMENT TYPES ARE: STAGING, LIGHTING, POWER AND SOUND
-		Equipment equipment = new Equipment("300","Stage Light B", "Lighting","Available", 2000f);
+		Equipment equipment = new Equipment("800","Stage Light C", "Lighting","Available", 3000f);
 		
 		//NB, Customer ID and Equipment ID, must exist before a transaction can be created
 		Transaction transaction = new Transaction("T1OO","1","100",Date.valueOf(LocalDate.of(2023, 11, 13)),
@@ -48,7 +48,17 @@ public class Driver {
 		//NB TransactionId need to exist before creating an invoice
 		Invoice invoice = new Invoice("I1","T1OO",Date.valueOf(LocalDate.of(2023, 11, 16)),1200f);
 		
-		/*client.sendAction("Add User");
+		        // Start the GUI on the event dispatch thread
+		        SwingUtilities.invokeLater(() -> {
+		            // Run the login view
+		            Login login = new Login();
+		            login.setVisible(true);
+	 			});
+		        
+		       
+		
+		/*
+		client.sendAction("Add User");
 		System.out.println("Message sent to server");
 		client.sendUser(user);
 		System.out.println("Record sent to server");
@@ -86,8 +96,6 @@ public class Driver {
 		client.receiveResponse();
 		
 		client.closeConnection();
-		
-				
 		
 		
 		client.sendAction("Find Equipment");
@@ -136,7 +144,7 @@ public class Driver {
 		
 		client.closeConnection();
 		
-		client.sendAction("Add Equipment");
+		 client.sendAction("Add Equipment");
 		System.out.println("Message sent to server");
 		client.sendEquipment(equipment);
 		System.out.println("Record sent to server");

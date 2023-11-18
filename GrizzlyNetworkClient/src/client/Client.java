@@ -6,8 +6,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.JOptionPane;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import domain.Customer;
 import domain.Employee;
@@ -25,9 +29,17 @@ public class Client {
 	private Socket connectionSocket;
 	private String action = "";
 	
+	private static final Logger logger = LogManager.getLogger(Client.class);
+    private static final Logger exceptionLogger = LogManager.getLogger("exceptions");
+
+	
 	public Client() {
 		this.createConnection();
 		this.configureStreams();
+		
+		  // Start a new thread for communication with the server
+        Thread communicationThread = new Thread(this::startCommunication);
+        communicationThread.start();
 	}
 	
 	private void createConnection() {
@@ -228,6 +240,36 @@ public class Client {
 	    }
 	}
 	
+	private void startCommunication() {
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                // Prompt the user for input
+                System.out.println("Enter your action (e.g., 'Add User', 'Find User', 'Exit'): ");
+                String userInput = scanner.nextLine();
+
+                // Check if the user wants to exit
+                if ("Exit".equalsIgnoreCase(userInput)) {
+                    break; // Exit the loop and close the connection
+                }
+
+                // Send the user input as an action to the server
+                sendAction(userInput);
+
+                // Sleep for a short duration to avoid high CPU usage in the loop
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Close the connection when the loop exits
+            closeConnection();
+        }
+    }
+	
 	public void receiveResponse() {
 		try {
 			if(action.equalsIgnoreCase("Add User")) {
@@ -235,6 +277,7 @@ public class Client {
 				if( flag == true) {
 					JOptionPane.showMessageDialog(null, "Record added successfully",
 							"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+					  logger.info("Record added successfully");
 				}
 			}
 			if(action.equalsIgnoreCase("Find User")) {
@@ -243,6 +286,7 @@ public class Client {
 				if(user == null) {
 					JOptionPane.showMessageDialog(null, "Record could not be found",
 							"Find Record Status", JOptionPane.ERROR_MESSAGE);
+					  logger.info("No Record Found");
 					return;
 				}
 				System.out.println("Received User: " + user.getUserId() + " " + user.getUsername() + " " + user.getPassword() + 
@@ -253,6 +297,7 @@ public class Client {
 				if( flag == true) {
 					JOptionPane.showMessageDialog(null, "Record added successfully",
 							"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+					logger.info("Record added successfully");
 				}
 			}
 				if(action.equalsIgnoreCase("Find Customer")) {
@@ -261,6 +306,7 @@ public class Client {
 					if(customer == null) {
 						JOptionPane.showMessageDialog(null, "Record could not be found",
 								"Find Record Status", JOptionPane.ERROR_MESSAGE);
+						logger.info("No Record Found");
 						return;
 					}
 					System.out.println("Received Customer: " + customer.getCustomerId() + " " + customer.getFirstName() +
@@ -271,6 +317,7 @@ public class Client {
 					if( flag == true) {
 						JOptionPane.showMessageDialog(null, "Record added successfully",
 								"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+						  logger.info("Record added successfully");
 					}
 				}
 					if(action.equalsIgnoreCase("Find Employee")) {
@@ -279,6 +326,7 @@ public class Client {
 						if(employee == null) {
 							JOptionPane.showMessageDialog(null, "Record could not be found",
 									"Find Record Status", JOptionPane.ERROR_MESSAGE);
+							logger.info("No Record Found");
 							return;
 						}
 						System.out.println("Received Employee: " + employee.getEmployeeId() + " " + employee.getFirstName() +
@@ -289,6 +337,7 @@ public class Client {
 						if( flag == true) {
 							JOptionPane.showMessageDialog(null, "Record added successfully",
 									"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+							  logger.info("Record added successfully");
 						}
 					}
 						if(action.equalsIgnoreCase("Find Equipment")) {
@@ -297,6 +346,7 @@ public class Client {
 							if(equipment == null) {
 								JOptionPane.showMessageDialog(null, "Record could not be found",
 										"Find Record Status", JOptionPane.ERROR_MESSAGE);
+								logger.info("No Record Found");
 								return;
 							}
 							System.out.println("Received Equipment: " + equipment.getEquipmentId() + " " + equipment.getEquipmentName() +
@@ -307,6 +357,7 @@ public class Client {
 							if( flag == true) {
 								JOptionPane.showMessageDialog(null, "Record added successfully",
 										"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+								  logger.info("Record added successfully");
 							}
 						}
 							if(action.equalsIgnoreCase("Find Transaction")) {
@@ -315,6 +366,7 @@ public class Client {
 								if(transaction == null) {
 									JOptionPane.showMessageDialog(null, "Record could not be found",
 											"Find Record Status", JOptionPane.ERROR_MESSAGE);
+									logger.info("No Record Found");
 									return;
 								}
 								System.out.println("Received Transaction: " + transaction.getTransactionId() + " " + transaction.getCustomerId() + 
@@ -326,6 +378,7 @@ public class Client {
 								if( flag == true) {
 									JOptionPane.showMessageDialog(null, "Record added successfully",
 											"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+									  logger.info("Record added successfully");
 								}
 							}
 								if(action.equalsIgnoreCase("Find Message")) {
@@ -334,6 +387,7 @@ public class Client {
 									if(message == null) {
 										JOptionPane.showMessageDialog(null, "Record could not be found",
 												"Find Record Status", JOptionPane.ERROR_MESSAGE);
+										logger.info("No Record Found");
 										return;
 									}
 									System.out.println("Received Message: " + message.getMessageId() + " " + message.getSenderId() + 
@@ -345,6 +399,7 @@ public class Client {
 								if( flag == true) {
 									JOptionPane.showMessageDialog(null, "Record added successfully",
 											"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+									  logger.info("Record added successfully");
 								}
 							}
 								if(action.equalsIgnoreCase("Find Rental Request")) {
@@ -353,6 +408,7 @@ public class Client {
 									if(rentalRequest == null) {
 										JOptionPane.showMessageDialog(null, "Record could not be found",
 												"Find Record Status", JOptionPane.ERROR_MESSAGE);
+										logger.info("No Record Found");
 										return;
 									}
 									System.out.println("Received Request: " + rentalRequest.getRequestId() + " " + rentalRequest.getCustomerId() + 
@@ -364,6 +420,7 @@ public class Client {
 									if( flag == true) {
 										JOptionPane.showMessageDialog(null, "Record added successfully",
 												"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+										  logger.info("Record added successfully");
 									}
 								}
 									if(action.equalsIgnoreCase("Find Scheduled Equipment")) {
@@ -372,6 +429,7 @@ public class Client {
 										if(scheduledEquipment == null) {
 											JOptionPane.showMessageDialog(null, "Record could not be found",
 													"Find Record Status", JOptionPane.ERROR_MESSAGE);
+											logger.info("No Record Found");
 											return;
 										}
 										System.out.println("Received Scheduled Equipment: " + scheduledEquipment.getScheduledId() + " " + scheduledEquipment.getEventId() + 
@@ -382,6 +440,7 @@ public class Client {
 										if( flag == true) {
 											JOptionPane.showMessageDialog(null, "Record added successfully",
 													"Add Record Status",JOptionPane.INFORMATION_MESSAGE);
+											  logger.info("Record added successfully");
 										}
 									}
 										if(action.equalsIgnoreCase("Find Invoice")) {
@@ -390,6 +449,7 @@ public class Client {
 											if(invoice == null) {
 												JOptionPane.showMessageDialog(null, "Record could not be found",
 														"Find Record Status", JOptionPane.ERROR_MESSAGE);
+												logger.info("No Invoice Found");
 												return;
 											}
 											System.out.println("Received Invoice: " + invoice.getInvoiceId() + " " + invoice.getTransactionId() + 
@@ -401,6 +461,7 @@ public class Client {
 								            if (equipmentList == null || equipmentList.isEmpty()) {
 								                JOptionPane.showMessageDialog(null, "No equipment found for the specified type",
 								                        "Find Equipment Status", JOptionPane.INFORMATION_MESSAGE);
+								                logger.info("No equipment found for the specified type");
 								                return;
 								            }
 
@@ -409,15 +470,23 @@ public class Client {
 								                System.out.println("Received Equipment: " + equipment.getEquipmentId() + " " +
 								                        equipment.getEquipmentName() + " " + equipment.getStatus() + " " +
 								                        equipment.getType() + " " + equipment.getCostPerDay());
+								                logger.info("Received Equipment: " + equipment.getEquipmentId() + " " +
+							                            equipment.getEquipmentName() + " " + equipment.getStatus() + " " +
+							                            equipment.getType() + " " + equipment.getCostPerDay());
 								            }
 								        }
 		} catch (ClassCastException ex) {
-			ex.printStackTrace();
-		} catch (EOFException eof) {
-	        System.out.println("Server closed the connection.");
-	        // Handle the EOFException, e.g., close resources, inform the user, etc.
-	    } catch (ClassNotFoundException | IOException ex) {
-	        ex.printStackTrace();
-	    }
-	}
+            ex.printStackTrace();
+        } catch (EOFException eof) {
+            System.out.println("Server closed the connection.");
+            logger.warn("Server closed the connection.");
+            exceptionLogger.warn("Server closed the connection.", eof);
+            // Handle the EOFException, e.g., close resources, inform the user, etc.
+        } catch (ClassNotFoundException | IOException ex) {
+            ex.printStackTrace();
+            logger.error("Exception occurred: " + ex.getMessage());
+            exceptionLogger.error("Exception occurred", ex);
+        }
+    }
+
 }
