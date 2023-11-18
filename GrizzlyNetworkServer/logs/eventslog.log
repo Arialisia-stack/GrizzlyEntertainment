@@ -86,3 +86,88 @@ java.net.SocketException: Connection reset
 	at java.lang.Thread.run(Thread.java:1623) [?:?]
 [INFO ] 2023-11-18 00:00:09.621[main]Server - Server is starting...
 [INFO ] 2023-11-18 00:02:21.159[Thread-0]Server - Received action: Add Equipment
+[INFO ] 2023-11-18 00:19:02.384[main]Server - Server is starting...
+[INFO ] 2023-11-18 00:19:26.671[main]Server - Server is starting...
+[INFO ] 2023-11-18 00:19:48.897[main]Server - Server is starting...
+[ERROR] 2023-11-18 00:19:48.906[main]Server - Error creating server socket
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:556) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:545) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:634) ~[?:?]
+	at java.net.ServerSocket.bind(ServerSocket.java:393) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:275) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:168) ~[?:?]
+	at server.Server.createConnection(Server.java:53) [bin/:?]
+	at server.Server.<init>(Server.java:47) [bin/:?]
+	at server.Driver.main(Driver.java:6) [bin/:?]
+[INFO ] 2023-11-18 00:21:32.638[main]Server - Server is starting...
+[INFO ] 2023-11-18 00:21:48.080[main]Server - Server is starting...
+[ERROR] 2023-11-18 00:21:48.094[main]Server - Error creating server socket
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:556) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:545) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:634) ~[?:?]
+	at java.net.ServerSocket.bind(ServerSocket.java:393) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:275) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:168) ~[?:?]
+	at server.Server.createConnection(Server.java:53) [bin/:?]
+	at server.Server.<init>(Server.java:47) [bin/:?]
+	at server.Driver.main(Driver.java:6) [bin/:?]
+[INFO ] 2023-11-18 00:22:20.682[main]Server - Server is starting...
+[ERROR] 2023-11-18 00:22:20.698[main]Server - Error creating server socket
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:556) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:545) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:634) ~[?:?]
+	at java.net.ServerSocket.bind(ServerSocket.java:393) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:275) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:168) ~[?:?]
+	at server.Server.createConnection(Server.java:53) [bin/:?]
+	at server.Server.<init>(Server.java:47) [bin/:?]
+	at server.Driver.main(Driver.java:6) [bin/:?]
+[INFO ] 2023-11-18 00:22:39.006[main]Server - Server is starting...
+[ERROR] 2023-11-18 00:22:39.022[main]Server - Error creating server socket
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:556) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:545) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:634) ~[?:?]
+	at java.net.ServerSocket.bind(ServerSocket.java:393) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:275) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:168) ~[?:?]
+	at server.Server.createConnection(Server.java:53) [bin/:?]
+	at server.Server.<init>(Server.java:47) [bin/:?]
+	at server.Driver.main(Driver.java:6) [bin/:?]
+[INFO ] 2023-11-18 00:22:49.936[main]Server - Server is starting...
+[ERROR] 2023-11-18 00:22:49.951[main]Server - Error creating server socket
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:556) ~[?:?]
+	at sun.nio.ch.Net.bind(Net.java:545) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:634) ~[?:?]
+	at java.net.ServerSocket.bind(ServerSocket.java:393) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:275) ~[?:?]
+	at java.net.ServerSocket.<init>(ServerSocket.java:168) ~[?:?]
+	at server.Server.createConnection(Server.java:53) [bin/:?]
+	at server.Server.<init>(Server.java:47) [bin/:?]
+	at server.Driver.main(Driver.java:6) [bin/:?]
+[INFO ] 2023-11-18 00:23:39.771[main]Server - Server is starting...
+[WARN ] 2023-11-18 00:23:50.721[Thread-0]Server - Client closed the connection.
+java.net.SocketException: Connection reset
+	at sun.nio.ch.NioSocketImpl.implRead(NioSocketImpl.java:318) ~[?:?]
+	at sun.nio.ch.NioSocketImpl.read(NioSocketImpl.java:345) ~[?:?]
+	at sun.nio.ch.NioSocketImpl$1.read(NioSocketImpl.java:794) ~[?:?]
+	at java.net.Socket$SocketInputStream.read(Socket.java:1025) ~[?:?]
+	at java.net.Socket$SocketInputStream.read(Socket.java:1019) ~[?:?]
+	at java.io.ObjectInputStream$PeekInputStream.peek(ObjectInputStream.java:2889) ~[?:?]
+	at java.io.ObjectInputStream$BlockDataInputStream.peek(ObjectInputStream.java:3216) ~[?:?]
+	at java.io.ObjectInputStream$BlockDataInputStream.peekByte(ObjectInputStream.java:3226) ~[?:?]
+	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1711) ~[?:?]
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:538) ~[?:?]
+	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:496) ~[?:?]
+	at server.Server.handleClientRequest(Server.java:524) ~[bin/:?]
+	at server.Server.lambda$0(Server.java:500) ~[bin/:?]
+	at java.lang.Thread.run(Thread.java:1623) [?:?]
